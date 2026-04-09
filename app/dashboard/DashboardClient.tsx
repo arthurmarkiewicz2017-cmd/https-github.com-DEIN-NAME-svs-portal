@@ -86,7 +86,7 @@ export default function DashboardClient({ userEmail, profile }: { userEmail: str
       <header className="bg-svs-green text-white shadow">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-white text-svs-green font-bold flex items-center justify-center">SVS</div>
+            <img src="/logo.png" alt="SVS" className="h-10 w-auto bg-white rounded p-1"/>
             <div>
               <h1 className="font-bold">SV Schmöckwitz-Eichwalde</h1>
               <p className="text-xs opacity-80">Vorstandsportal</p>

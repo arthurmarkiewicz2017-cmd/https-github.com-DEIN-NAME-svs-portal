@@ -32,7 +32,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <form onSubmit={handleLogin} className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-14 h-14 rounded-full bg-svs-green flex items-center justify-center text-white font-bold text-xl">SVS</div>
+          <img src="/logo.png" alt="SVS" className="h-14 w-auto"/>
           <div>
             <h1 className="text-xl font-bold text-svs-darkgreen">SV Schmöckwitz-Eichwalde</h1>
             <p className="text-sm text-gray-500">Vorstandsportal</p>
