@@ -87,7 +87,7 @@ export default function DashboardClient({ userEmail, profile }: { userEmail: str
 
       <main className="max-w-6xl mx-auto p-4">
         <section className="bg-white rounded-2xl shadow p-6 mb-6">
-          <h2 className="text-lg font-bold text-svs-darkgreen mb-4">Datei hochladen</h2>
+          <h2 className="text-lg font-bold text-svs-darkgreen mb-4">Datei Upload</h2>
           <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
             <select value={folder} onChange={e => setFolder(e.target.value)} className="border rounded-lg px-3 py-2">
               <option value="allgemein">Allgemein</option>
@@ -104,14 +104,14 @@ export default function DashboardClient({ userEmail, profile }: { userEmail: str
               <option value="admin">Sichtbar: Nur Admin</option>
             </select>
             <label className="bg-svs-green hover:bg-svs-darkgreen text-white px-4 py-2 rounded-lg cursor-pointer">
-              {uploading ? "Lade hoch…" : "Datei wählen"}
+              {uploading ? "Lade hoch…" : "Datei Upload"}
               <input type="file" className="hidden" onChange={handleUpload} disabled={uploading}/>
             </label>
           </div>
         </section>
 
         <section className="bg-white rounded-2xl shadow p-6">
-          <h2 className="text-lg font-bold text-svs-darkgreen mb-4">Dateien ({files.length})</h2>
+          <h2 className="text-lg font-bold text-svs-darkgreen mb-4">Datei Download ({files.length})</h2>
           {files.length === 0 && <p className="text-gray-500 text-sm">Noch keine Dateien.</p>}
           <div className="divide-y">
             {files.map(f => (
