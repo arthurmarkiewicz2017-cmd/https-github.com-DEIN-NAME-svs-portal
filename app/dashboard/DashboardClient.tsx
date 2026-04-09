@@ -45,20 +45,21 @@ export default function DashboardClient({ userEmail, profile }: { userEmail: str
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const path = `${folder}/${Date.now()}_${file.name}`;
-    const { error: upErr } = await supabase.storage.from("files").upload(path, file);
-    if (!upErr) {
-      await supabase.from("files").insert({
-        storage_path: path,
-        original_name: file.name,
-        size_bytes: file.size,
-        mime_type: file.type,
-        folder,
-        visibility,
-        uploaded_by: profile?.id,
-      });
-      await load();
-    } else alert(upErr.message);
+    const safeName = file.name.replace(/[^\w.\-]/g, "_");
+    const path = `${folder}/${Date.now()}_${safeName}`;
+    const { error: upErr } = await supabase.storage.from("files").upload(path, file, { upsert: false });
+    if (upErr) { alert("Storage-Fehler: " + upErr.message); setUploading(false); e.target.value = ""; return; }
+    const { error: dbErr } = await supabase.from("files").insert({
+      storage_path: path,
+      original_name: file.name,
+      size_bytes: file.size,
+      mime_type: file.type,
+      folder,
+      visibility,
+      uploaded_by: profile?.id,
+    });
+    if (dbErr) { alert("DB-Fehler: " + dbErr.message); }
+    await load();
     setUploading(false);
     e.target.value = "";
   }
