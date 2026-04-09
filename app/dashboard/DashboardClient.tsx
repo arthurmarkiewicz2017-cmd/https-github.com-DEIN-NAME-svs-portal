@@ -4,6 +4,21 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createSupabaseBrowser } from "@/lib/supabase-browser";
 
+const FOLDER_LABELS: Record<string, string> = {
+  allgemein: "Allgemein",
+  "1_vorsitzender": "1. Vorsitzender",
+  "2_vorsitzender": "2. Vorsitzender",
+  jugendleiter: "Jugendleiter",
+  schatzmeister: "Schatzmeister",
+  "2_jugendleiter": "2. Jugendleiter",
+  leiter_maennerfussball: "Leiter Männerfußball",
+  leiter_frauen_maedchen: "Leiter Frauen-/Mädchenfußball",
+  sponsoren: "Sponsorenbeauftragter",
+  leiter_technik: "Leiter Technik",
+  oeffentlichkeitsarbeit: "Öffentlichkeitsarbeit",
+  ehrenamt: "Ehrenamtsbeauftragter",
+};
+
 type Profile = { id: string; full_name: string; role: string; email: string } | null;
 type FileRow = {
   id: string; original_name: string; storage_path: string;
@@ -91,12 +106,17 @@ export default function DashboardClient({ userEmail, profile }: { userEmail: str
           <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
             <select value={folder} onChange={e => setFolder(e.target.value)} className="border rounded-lg px-3 py-2">
               <option value="allgemein">Allgemein</option>
-              <option value="vorstand">Vorstand</option>
-              <option value="finanzen">Finanzen</option>
-              <option value="jugend">Jugend</option>
-              <option value="frauen">Frauen</option>
-              <option value="sponsoren">Sponsoren</option>
-              <option value="technik">Technik</option>
+              <option value="1_vorsitzender">1. Vorsitzender</option>
+              <option value="2_vorsitzender">2. Vorsitzender</option>
+              <option value="jugendleiter">Jugendleiter</option>
+              <option value="schatzmeister">Schatzmeister</option>
+              <option value="2_jugendleiter">2. Jugendleiter</option>
+              <option value="leiter_maennerfussball">Leiter Männerfußball</option>
+              <option value="leiter_frauen_maedchen">Leiter Frauen-/Mädchenfußball</option>
+              <option value="sponsoren">Sponsorenbeauftragter</option>
+              <option value="leiter_technik">Leiter Technik</option>
+              <option value="oeffentlichkeitsarbeit">Öffentlichkeitsarbeit</option>
+              <option value="ehrenamt">Ehrenamtsbeauftragter</option>
             </select>
             <select value={visibility} onChange={e => setVisibility(e.target.value as any)} className="border rounded-lg px-3 py-2">
               <option value="vorstand">Sichtbar: Vorstand</option>
@@ -113,22 +133,33 @@ export default function DashboardClient({ userEmail, profile }: { userEmail: str
         <section className="bg-white rounded-2xl shadow p-6">
           <h2 className="text-lg font-bold text-svs-darkgreen mb-4">Datei Download ({files.length})</h2>
           {files.length === 0 && <p className="text-gray-500 text-sm">Noch keine Dateien.</p>}
-          <div className="divide-y">
-            {files.map(f => (
-              <div key={f.id} className="py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                <div>
-                  <p className="font-semibold">{f.original_name}</p>
-                  <p className="text-xs text-gray-500">
-                    {f.folder} · {f.visibility} · {(f.size_bytes / 1024).toFixed(1)} KB · {new Date(f.created_at).toLocaleString("de-DE")}
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <button onClick={() => handleDownload(f)} className="bg-svs-green text-white px-3 py-1 rounded text-sm hover:bg-svs-darkgreen">Download</button>
-                  <button onClick={() => handleDelete(f)} className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">Löschen</button>
-                </div>
+          {Object.entries(
+            files.reduce<Record<string, FileRow[]>>((acc, f) => {
+              (acc[f.folder] ||= []).push(f); return acc;
+            }, {})
+          ).map(([folderName, folderFiles]) => (
+            <details key={folderName} open className="mb-4 border rounded-lg">
+              <summary className="cursor-pointer font-semibold px-3 py-2 bg-svs-light text-svs-darkgreen rounded-t-lg">
+                📁 {FOLDER_LABELS[folderName] ?? folderName} ({folderFiles.length})
+              </summary>
+              <div className="divide-y">
+                {folderFiles.map(f => (
+                  <div key={f.id} className="py-3 px-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <div>
+                      <p className="font-semibold">{f.original_name}</p>
+                      <p className="text-xs text-gray-500">
+                        {f.visibility} · {(f.size_bytes / 1024).toFixed(1)} KB · {new Date(f.created_at).toLocaleString("de-DE")}
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button onClick={() => handleDownload(f)} className="bg-svs-green text-white px-3 py-1 rounded text-sm hover:bg-svs-darkgreen">Download</button>
+                      <button onClick={() => handleDelete(f)} className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">Löschen</button>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </details>
+          ))}
         </section>
       </main>
     </div>
