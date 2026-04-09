@@ -1,0 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --svs-green: #0E9444; }
+body { font-family: system-ui, -apple-system, sans-serif; }
